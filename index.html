@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>宝宝辅食轻量执行系统 V0</title>
+<style>
+:root{--g:#477762;--s:#eaf3ee;--b:#f6f8f6;--l:#dfe7e2;--t:#203129;--m:#758179}
+*{box-sizing:border-box}body{margin:0;background:var(--b);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+button,input{font:inherit}.top{padding:16px 20px;background:#fff;border-bottom:1px solid var(--l);display:flex;justify-content:space-between;gap:10px}.brand{font-weight:800;font-size:20px}
+.wrap{max-width:1100px;margin:auto}.layout{display:grid;grid-template-columns:180px 1fr;gap:16px;padding:16px}.side,.card{background:#fff;border:1px solid var(--l);border-radius:16px}.side{padding:8px;height:max-content}.nav{display:block;width:100%;border:0;background:none;text-align:left;padding:12px;border-radius:10px}.nav.on{background:var(--s);font-weight:700}
+.page{display:none}.page.on{display:block}.card{padding:17px;margin-bottom:13px}.muted{color:var(--m);font-size:14px}.btn{border:1px solid var(--l);background:#fff;padding:9px 12px;border-radius:10px;margin:4px}.btn.p{background:var(--g);color:#fff;border-color:var(--g)}
+.meal{padding:13px 0;border-bottom:1px solid var(--l)}.meal:last-child{border:0}.meal b{font-size:18px}.tag{background:#fff1d8;border-radius:99px;padding:3px 7px;font-size:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#fafcfb;text-align:center;padding:12px;border-radius:10px}.stat b{display:block;font-size:20px}
+.bottom{display:none}.modalbg{display:none;position:fixed;inset:0;background:#0007;padding:20px;z-index:20}.modalbg.on{display:flex;justify-content:center;align-items:flex-start}.modal{background:#fff;border-radius:16px;padding:18px;width:min(560px,100%);margin-top:5vh}.field{margin:12px 0}.field input{width:100%;padding:11px;border:1px solid var(--l);border-radius:10px}
+.auth{max-width:500px;margin:50px auto;padding:14px}.recipe{display:grid;grid-template-columns:1fr 1fr;gap:10px}.print{background:#fff;border:1px solid var(--l);padding:20px}.print table{width:100%;border-collapse:collapse;font-size:12px}.print td,.print th{border:1px solid #bbb;padding:6px;text-align:center}
+@media(max-width:720px){.layout{display:block;padding:12px 12px 78px}.side{display:none}.grid,.recipe{grid-template-columns:1fr}.bottom{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--l);z-index:10}.bottom button{border:0;background:#fff;padding:13px 2px;font-size:12px}.bottom button.on{color:var(--g);font-weight:800}.brand{font-size:17px}}
+@media print{.top,.side,.bottom,.noprint{display:none!important}.layout{display:block}.print{border:0}}
+</style></head><body>
+<div class="wrap">
+<div id="auth" class="auth"><div class="card"><h1>宝宝辅食轻量执行系统</h1><p class="muted">V0：模拟唯一授权码激活</p><div class="field"><input id="code" value="FS7K-82QM-6P3A"></div><button class="btn p" id="activate">验证授权码</button><p class="muted">演示码：FS7K-82QM-6P3A</p></div></div>
+<div id="app" style="display:none">
+<header class="top"><div class="brand">宝宝辅食 All in One <span class="muted">V0</span></div><div>小满 · 7月龄</div></header>
+<div class="layout"><aside class="side">
+<button class="nav on" data-p="today">今日辅食</button><button class="nav" data-p="plan">我的计划</button><button class="nav" data-p="library">辅食库</button><button class="nav" data-p="records">喂养记录</button><button class="nav" data-p="weekly">本周记录</button><button class="nav" data-p="print">打印中心</button><button class="nav" data-p="mine">我的</button>
+</aside><main>
+<section id="today" class="page on"><h2>小满今天怎么吃</h2><p class="muted">7月龄 · Demo第6天</p><div class="card" id="meals"></div>
+<div class="grid"><div class="card"><h3>本周概览</h3><div class="stats"><div class="stat"><b id="done">0/3</b>今日完成</div><div class="stat"><b>2</b>新增食材</div><div class="stat"><b>1</b>观察中</div></div><button class="btn" data-go="weekly">查看本周记录</button></div><div class="card"><h3>家庭动态</h3><p class="muted" id="family">暂时没有今天的新记录</p></div></div></section>
+<section id="plan" class="page"><h2>我的7月龄计划</h2><p class="muted">点击“替换”即可模拟调整计划。</p><div class="card" id="plans"></div><button class="btn" data-go="print">A4打印预览</button></section>
+<section id="library" class="page"><h2>辅食库</h2><p class="muted">V0仅放少量Demo教程。</p><div class="recipe" id="recipes"></div></section>
+<section id="records" class="page"><h2>喂养记录</h2><p class="muted">普通记录与新食材观察合并。</p><div class="card" id="recordList"></div></section>
+<section id="weekly" class="page"><h2>本周记录</h2><div class="card"><div class="stats"><div class="stat"><b id="weekN">8</b>已记录餐次</div><div class="stat"><b>2</b>新增食材</div><div class="stat"><b id="obsN">1</b>观察中</div></div></div><div class="card"><h3>本周新增食材</h3><p>蛋黄、鳕鱼</p><h3>仍在观察</h3><p id="obsFood">鳕鱼</p></div></section>
+<section id="print" class="page"><div class="noprint"><h2>A4打印中心</h2><button class="btn p" id="printBtn">打印 / 保存PDF</button></div><div class="print"><h3 style="text-align:center">小满 · 7月龄一周辅食计划</h3><table><tr><th>时间</th><th>周一</th><th>周二</th><th>周三</th></tr><tr><td>10:00</td><td>鸡肉菠菜米粉</td><td>南瓜米粉</td><td>鳕鱼南瓜米粉</td></tr><tr><td>15:00</td><td>火龙果泥</td><td>香蕉泥</td><td>梨泥</td></tr><tr><td>17:00</td><td>猪肉菠菜米粉</td><td>牛肉胡萝卜米粉</td><td>鸡肉西兰花米粉</td></tr></table></div></section>
+<section id="mine" class="page"><h2>我的</h2><div class="grid"><div class="card"><h3>宝宝档案</h3><p>小满 · 7月龄</p></div><div class="card"><h3>家庭共享</h3><p>主账号：妈妈</p><p>照护者：奶奶、爸爸</p><button class="btn" id="invite">生成家庭邀请码</button><p id="inviteText" class="muted"></p></div></div><div class="card"><h3>食材档案</h3><p>蛋黄 · 已尝试</p><p id="cod">鳕鱼 · 正在观察 1/3</p><p>南瓜 · 已尝试</p></div><div class="card"><h3>商品授权</h3><p>FS7K-82QM-6P3A</p><p class="muted">正式版：一个授权码只能激活一个主账号；家人使用家庭邀请码加入。</p></div></section>
+</main></div>
+<nav class="bottom"><button class="on" data-p="today">今日</button><button data-p="plan">计划</button><button data-p="library">辅食库</button><button data-p="records">记录</button><button data-p="mine">我的</button></nav>
+</div></div>
+<div id="mbg" class="modalbg"><div class="modal"><button class="btn" id="close" style="float:right">关闭</button><h3 id="mt"></h3><div id="mc"></div></div></div>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let meals=[['10:00','鸡肉菠菜米粉',''],['15:00','火龙果泥 15g',''],['17:00','鳕鱼南瓜米粉','鳕鱼']], records=[];
+function page(id){$$('.page').forEach(x=>x.classList.toggle('on',x.id===id));$$('[data-p]').forEach(x=>x.classList.toggle('on',x.dataset.p===id));}
+$$('[data-p]').forEach(b=>b.onclick=()=>page(b.dataset.p));$$('[data-go]').forEach(b=>b.onclick=()=>page(b.dataset.go));
+$('#activate').onclick=()=>{if($('#code').value.trim()==='FS7K-82QM-6P3A'){$('#auth').style.display='none';$('#app').style.display='block'}else alert('演示授权码不正确')};
+function renderMeals(){ $('#meals').innerHTML=meals.map((m,i)=>`<div class="meal"><b>${m[0]}　${m[1]}</b> ${m[2]?'<span class="tag">新食材</span>':''}<div><button class="btn" onclick="recipe(${i})">查看做法</button><button class="btn" onclick="swap(${i})">换一个</button><button class="btn p" onclick="logMeal(${i})">记录</button></div></div>`).join('')}
+function renderPlan(){ $('#plans').innerHTML=meals.map((m,i)=>`<div class="meal"><b>${m[0]}　${m[1]}</b><button class="btn" onclick="swap(${i})">替换</button></div>`).join('')}
+function renderRecipes(){let a=['鸡肉菠菜米粉','鳕鱼南瓜米粉','猪肉菠菜米粉','火龙果泥'];$('#recipes').innerHTML=a.map(x=>`<button class="card" onclick="showRecipe('${x}')"><b>${x}</b><p class="muted">点击查看教程</p></button>`).join('')}
+function modal(t,c){$('#mt').textContent=t;$('#mc').innerHTML=c;$('#mbg').classList.add('on')} $('#close').onclick=()=>$('#mbg').classList.remove('on');
+function recipe(i){showRecipe(meals[i][1])}
+function showRecipe(n){modal(n,`<p><b>适合月龄：</b>7月龄+</p><p><b>食材准备：</b>对应食材 + 强化铁米粉</p><h4>制作步骤</h4><ol><li>食材洗净并按月龄处理。</li><li>充分熟制并处理成适龄性状。</li><li>与米粉搭配，现做现吃。</li></ol><p class="muted">正式版将调用手册完整教程。</p>`)}
+function swap(i){modal('更换这一餐',`<button class="btn" onclick="choose(${i},'牛肉南瓜米粉')">牛肉南瓜米粉</button><button class="btn" onclick="choose(${i},'鸡肉西兰花米粉')">鸡肉西兰花米粉</button><button class="btn" onclick="choose(${i},'南瓜米粉')">南瓜米粉</button>`)}
+window.choose=(i,n)=>{meals[i][1]=n;meals[i][2]='';renderMeals();renderPlan();$('#mbg').classList.remove('on')}
+function logMeal(i){let m=meals[i];modal('记录这一餐',`<p><b>${m[0]} ${m[1]}</b></p><p>吃了多少？</p><select id="amt"><option>几口</option><option>约一半</option><option selected>大部分</option><option>吃完</option></select><p>接受度？</p><select id="acc"><option>喜欢</option><option>一般</option><option>不太喜欢</option></select>${m[2]?'<div class="card"><b>新食材观察：'+m[2]+'</b><p><label><input type="radio" name="o" value="暂无异常" checked> 暂未发现异常</label></p><p><label><input type="radio" name="o" value="有情况"> 有情况需要记录</label></p></div>':''}<button class="btn p" onclick="saveLog(${i})">保存记录</button>`)}
+window.saveLog=i=>{let m=meals[i],o=document.querySelector('input[name=o]:checked');records.unshift({time:m[0],food:m[1],amount:$('#amt').value,acc:$('#acc').value,obs:o?o.value:''});$('#family').textContent='👵 家人已记录：'+m[1]+' · '+$('#amt').value+' · '+$('#acc').value;$('#done').textContent=Math.min(records.length,3)+'/3';renderRecords();$('#mbg').classList.remove('on');page('records')}
+function renderRecords(){if(!records.length){$('#recordList').innerHTML='<p class="muted">还没有记录。请从“今日辅食”点击记录。</p>';return}$('#recordList').innerHTML=records.map(r=>`<div class="meal"><b>${r.time} ${r.food}</b><p>${r.amount} · ${r.acc}${r.obs?' · 新食材观察：'+r.obs:''}</p></div>`).join('')}
+$('#invite').onclick=()=>$('#inviteText').textContent='家庭邀请码：JM4827（V0演示）';$('#printBtn').onclick=()=>window.print();
+renderMeals();renderPlan();renderRecipes();renderRecords();
+</script></body></html>
